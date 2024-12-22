@@ -3,7 +3,7 @@ after downloading the file go to cd backend and run <br>
 and cd frontend and run<br>
 **npm install axios react-router-dom dotenv**
 to run<br>
-**cd backend**<br>
+**cd backend**
 <br>
 **npm run start:dev**
 <br>
