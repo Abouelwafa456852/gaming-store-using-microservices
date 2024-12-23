@@ -4,6 +4,7 @@ and cd frontend and run<br>
 **npm install axios react-router-dom dotenv**
 to run<br>
 **cd backend**
+**cd all paths in backend**
 <br>
 **npm run start:dev**
 <br>
