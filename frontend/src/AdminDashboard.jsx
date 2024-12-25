@@ -13,8 +13,15 @@ function AdminDashboard() {
   const [newProductDescription, setNewProductDescription] = useState('');
   const [newProductPrice, setNewProductPrice] = useState('');
   const [newProductStock, setNewProductStock] = useState('');
+  const [editProductId, setEditProductId] = useState(null); // ID of the product being edited
+  const [editProductFields, setEditProductFields] = useState({
+    name: '',
+    description: '',
+    price: '',
+    stock: '',
+  });
   const location = useLocation();
-  const admin = location.state?.user; // Get the logged-in admin user from navigation state
+  const admin = location.state?.user;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,7 +56,6 @@ function AdminDashboard() {
     fetchProducts();
   }, []);
 
-  // Function to delete a user
   const deleteUser = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/user/${id}`);
@@ -61,7 +67,6 @@ function AdminDashboard() {
     }
   };
 
-  // Function to delete a coupon
   const deleteCoupon = async (id) => {
     try {
       await axios.delete(`http://localhost:1000/coupon/${id}`);
@@ -73,7 +78,6 @@ function AdminDashboard() {
     }
   };
 
-  // Function to delete a product
   const deleteProduct = async (id) => {
     try {
       await axios.delete(`http://localhost:3000/product/${id}`);
@@ -85,7 +89,6 @@ function AdminDashboard() {
     }
   };
 
-  // Function to add a new coupon
   const addCoupon = async () => {
     try {
       const newCoupon = {
@@ -96,7 +99,7 @@ function AdminDashboard() {
 
       const response = await axios.post('http://localhost:1000/coupon', newCoupon);
       alert('Coupon added successfully');
-      setCoupons([...coupons, response.data]); // Add the new coupon to the state
+      setCoupons([...coupons, response.data]);
       setNewCouponCode('');
       setNewCouponDiscount('');
       setNewCouponExpiration('');
@@ -106,7 +109,6 @@ function AdminDashboard() {
     }
   };
 
-  // Function to add a new product
   const addProduct = async () => {
     try {
       const newProduct = {
@@ -118,7 +120,7 @@ function AdminDashboard() {
 
       const response = await axios.post('http://localhost:3000/product', newProduct);
       alert('Product added successfully');
-      setProducts([...products, response.data]); // Add the new product to the state
+      setProducts([...products, response.data]);
       setNewProductName('');
       setNewProductDescription('');
       setNewProductPrice('');
@@ -129,7 +131,41 @@ function AdminDashboard() {
     }
   };
 
-  // Check if a coupon is active
+  const startEditingProduct = (product) => {
+    setEditProductId(product._id);
+    setEditProductFields({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+    });
+  };
+
+  const updateProduct = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/product/${editProductId}`,
+        editProductFields
+      );
+      alert('Product updated successfully');
+      setProducts(
+        products.map((product) =>
+          product._id === editProductId ? response.data : product
+        )
+      );
+      setEditProductId(null);
+      setEditProductFields({ name: '', description: '', price: '', stock: '' });
+    } catch (err) {
+      console.error('Error updating product:', err.message);
+      alert('Failed to update product. Please try again.');
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditProductId(null);
+    setEditProductFields({ name: '', description: '', price: '', stock: '' });
+  };
+
   const isCouponActive = (expirationDate) => {
     const now = new Date();
     const expiryDate = new Date(expirationDate);
@@ -244,6 +280,19 @@ function AdminDashboard() {
               <td>{product.stock}</td>
               <td>
                 <button
+                  onClick={() => startEditingProduct(product)}
+                  style={{
+                    backgroundColor: '#2196F3',
+                    color: 'white',
+                    padding: '5px 10px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    marginRight: '10px',
+                  }}
+                >
+                  Edit
+                </button>
+                <button
                   onClick={() => deleteProduct(product._id)}
                   style={{
                     backgroundColor: '#f44336',
@@ -260,6 +309,88 @@ function AdminDashboard() {
           ))}
         </tbody>
       </table>
+
+      {/* Edit Product Form */}
+      {editProductId && (
+        <div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ccc' }}>
+          <h3>Edit Product</h3>
+          <label>
+            Name:
+            <input
+              type="text"
+              value={editProductFields.name}
+              onChange={(e) =>
+                setEditProductFields({ ...editProductFields, name: e.target.value })
+              }
+              style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
+            />
+          </label>
+          <label>
+            Description:
+            <input
+              type="text"
+              value={editProductFields.description}
+              onChange={(e) =>
+                setEditProductFields({ ...editProductFields, description: e.target.value })
+              }
+              style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
+            />
+          </label>
+          <label>
+            Price:
+            <input
+              type="number"
+              value={editProductFields.price}
+              onChange={(e) =>
+                setEditProductFields({
+                  ...editProductFields,
+                  price: parseFloat(e.target.value),
+                })
+              }
+              style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
+            />
+          </label>
+          <label>
+            Stock:
+            <input
+              type="number"
+              value={editProductFields.stock}
+              onChange={(e) =>
+                setEditProductFields({
+                  ...editProductFields,
+                  stock: parseInt(e.target.value, 10),
+                })
+              }
+              style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
+            />
+          </label>
+          <button
+            onClick={updateProduct}
+            style={{
+              padding: '5px 10px',
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '10px',
+            }}
+          >
+            Save
+          </button>
+          <button
+            onClick={cancelEdit}
+            style={{
+              padding: '5px 10px',
+              backgroundColor: '#f44336',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
 
       {/* Add New Coupon Form */}
       <h3>Add New Coupon</h3>
