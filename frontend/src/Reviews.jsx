@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
-import './style.css';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import "./style.css";
 
 function Reviews() {
   const [reviews, setReviews] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [newRating, setNewRating] = useState(5); // Default rating
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const location = useLocation();
   const product = location.state?.product; // Get the product details passed via state
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/review/product/${product._id}`); // Fetch reviews by productId
+        const response = await axios.get(
+          `https://review-service-wfxp.onrender.com/review/product/${product._id}`
+        ); // Fetch reviews by productId
         setReviews(response.data);
       } catch (err) {
-        console.error('Error fetching reviews:', err.message);
+        console.error("Error fetching reviews:", err.message);
       }
     };
 
@@ -26,31 +28,36 @@ function Reviews() {
 
   const handleAddReview = async () => {
     if (!newComment || !newRating) {
-      alert('Please provide both a comment and a rating.');
+      alert("Please provide both a comment and a rating.");
       return;
     }
 
     try {
       const data = {
         productId: product._id,
-        userId: 'exampleUserId', // Replace with actual userId
+        userId: "exampleUserId", // Replace with actual userId
         rating: parseInt(newRating, 10),
         comment: newComment,
       };
 
-      const response = await axios.post('http://localhost:4000/review', data); // Add a new review
+      const response = await axios.post(
+        "https://review-service-wfxp.onrender.com/review",
+        data
+      ); // Add a new review
       setReviews([...reviews, response.data]); // Update the reviews list
-      setNewComment('');
+      setNewComment("");
       setNewRating(5);
-      setMessage('Review added successfully!');
+      setMessage("Review added successfully!");
     } catch (err) {
-      console.error('Error adding review:', err.message);
-      setMessage('Failed to add review. Please try again.');
+      console.error("Error adding review:", err.message);
+      setMessage("Failed to add review. Please try again.");
     }
   };
 
   if (!product) {
-    return <p>Product details not found. Please navigate back and try again.</p>;
+    return (
+      <p>Product details not found. Please navigate back and try again.</p>
+    );
   }
 
   return (
@@ -71,7 +78,7 @@ function Reviews() {
         <h3>Add Your Review</h3>
         {message && <p className="message">{message}</p>}
         <div className="form-row">
-          <div style={{ width: '100%' }}>
+          <div style={{ width: "100%" }}>
             <label>Comment:</label>
             <textarea
               rows="4"

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useLocation } from 'react-router-dom';
-import './style.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import "./style.css";
 
 function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [discountCode, setDiscountCode] = useState('');
+  const [discountCode, setDiscountCode] = useState("");
   const [appliedDiscount, setAppliedDiscount] = useState(0); // Store applied discount percentage
-  const [message, setMessage] = useState(''); // Store messages for the user
+  const [message, setMessage] = useState(""); // Store messages for the user
   const [coupons, setCoupons] = useState([]); // Store all coupons
   const location = useLocation();
   const userId = location.state?.userId; // Get the user ID from navigation state
@@ -17,13 +17,21 @@ function CartPage() {
     const fetchCart = async () => {
       try {
         // Fetch orders for the user
-        const orderResponse = await axios.get(`http://localhost:2000/order?userId=${userId}`);
-        const productIds = orderResponse.data.flatMap(order => order.productIds);
+        const orderResponse = await axios.get(
+          `https://gaming-store-using-microservices.onrender.com/order?userId=${userId}`
+        );
+        const productIds = orderResponse.data.flatMap(
+          (order) => order.productIds
+        );
 
         // Fetch product details for all product IDs
         const productDetails = await Promise.all(
-          productIds.map(productId =>
-            axios.get(`http://localhost:3000/product/${productId}`).then(res => res.data)
+          productIds.map((productId) =>
+            axios
+              .get(
+                `https://product-service-pjzd.onrender.com/product/${productId}`
+              )
+              .then((res) => res.data)
           )
         );
 
@@ -35,20 +43,25 @@ function CartPage() {
         );
 
         // Calculate total price
-        const total = productDetails.reduce((sum, product) => sum + product.price, 0);
+        const total = productDetails.reduce(
+          (sum, product) => sum + product.price,
+          0
+        );
         setTotalPrice(total); // Set the total price
       } catch (err) {
-        console.error('Error fetching cart:', err.message);
+        console.error("Error fetching cart:", err.message);
       }
     };
 
     const fetchCoupons = async () => {
       try {
         // Fetch all available coupons
-        const response = await axios.get('http://localhost:1000/coupon'); // Updated URL for coupons
+        const response = await axios.get(
+          "https://coupon-service-hf15.onrender.com/coupon"
+        ); // Updated URL for coupons
         setCoupons(response.data); // Store coupons
       } catch (err) {
-        console.error('Error fetching coupons:', err.message);
+        console.error("Error fetching coupons:", err.message);
       }
     };
 
@@ -61,7 +74,9 @@ function CartPage() {
   const handleApplyCoupon = () => {
     // Check if the entered discount code matches any available coupons
     const matchedCoupon = coupons.find(
-      coupon => coupon.code === discountCode && new Date(coupon.expirationDate) > new Date()
+      (coupon) =>
+        coupon.code === discountCode &&
+        new Date(coupon.expirationDate) > new Date()
     );
 
     if (matchedCoupon) {
@@ -70,24 +85,29 @@ function CartPage() {
       setAppliedDiscount(discountPercentage);
       setMessage(`Discount of ${discountPercentage}% applied!`);
     } else {
-      setMessage('Invalid or expired discount code.');
+      setMessage("Invalid or expired discount code.");
     }
   };
 
   const handleDelete = async (orderId) => {
     try {
       // Call the microservice to delete the order by ID
-      await axios.delete(`http://localhost:2000/order/${orderId}`);
+      await axios.delete(
+        `https://gaming-store-using-microservices.onrender.com/order/${orderId}`
+      );
 
       // Update the cart after successful deletion
-      const updatedCart = cartItems.filter(item => item.orderId !== orderId);
+      const updatedCart = cartItems.filter((item) => item.orderId !== orderId);
       setCartItems(updatedCart);
 
       // Recalculate total price
-      const updatedTotalPrice = updatedCart.reduce((sum, item) => sum + item.price, 0);
+      const updatedTotalPrice = updatedCart.reduce(
+        (sum, item) => sum + item.price,
+        0
+      );
       setTotalPrice(updatedTotalPrice);
     } catch (err) {
-      console.error('Error deleting order:', err.message);
+      console.error("Error deleting order:", err.message);
     }
   };
 
@@ -96,9 +116,12 @@ function CartPage() {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto', padding: '20px' }}>
+    <div style={{ maxWidth: "800px", margin: "auto", padding: "20px" }}>
       <h2>Your Cart</h2>
-      <table border="1" style={{ width: '100%', textAlign: 'left', marginTop: '20px' }}>
+      <table
+        border="1"
+        style={{ width: "100%", textAlign: "left", marginTop: "20px" }}
+      >
         <thead>
           <tr>
             <th>Product Name</th>
@@ -114,11 +137,11 @@ function CartPage() {
               <td>
                 <button
                   style={{
-                    backgroundColor: 'red',
-                    color: 'white',
-                    padding: '5px 10px',
-                    border: 'none',
-                    cursor: 'pointer',
+                    backgroundColor: "red",
+                    color: "white",
+                    padding: "5px 10px",
+                    border: "none",
+                    cursor: "pointer",
                   }}
                   onClick={() => handleDelete(product.orderId)}
                 >
@@ -131,34 +154,36 @@ function CartPage() {
       </table>
 
       {/* Discount Box */}
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: "20px" }}>
         <label htmlFor="discountCode">Enter Discount Code:</label>
         <input
           type="text"
           id="discountCode"
           value={discountCode}
           onChange={(e) => setDiscountCode(e.target.value)}
-          style={{ marginLeft: '10px', padding: '5px' }}
+          style={{ marginLeft: "10px", padding: "5px" }}
         />
         <button
           onClick={handleApplyCoupon}
           style={{
-            marginLeft: '10px',
-            padding: '5px 10px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
+            marginLeft: "10px",
+            padding: "5px 10px",
+            backgroundColor: "#4CAF50",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
           }}
         >
           Apply
         </button>
-        {message && <p style={{ color: 'green', marginTop: '10px' }}>{message}</p>}
+        {message && (
+          <p style={{ color: "green", marginTop: "10px" }}>{message}</p>
+        )}
       </div>
 
       {/* Total Price */}
-      <div style={{ textAlign: 'right', marginTop: '20px', fontSize: '18px' }}>
-        <strong>Total Price: ${(calculateDiscountedPrice()).toFixed(2)}</strong>
+      <div style={{ textAlign: "right", marginTop: "20px", fontSize: "18px" }}>
+        <strong>Total Price: ${calculateDiscountedPrice().toFixed(2)}</strong>
       </div>
     </div>
   );
