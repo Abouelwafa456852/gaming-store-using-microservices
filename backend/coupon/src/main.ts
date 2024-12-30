@@ -6,7 +6,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:5173', // Allow only your React frontend
+    origin: 'https://gaming-store-iu64.onrender.com', // Allow only your React frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
