@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import './style.css';
 
 function Reviews() {
   const [reviews, setReviews] = useState([]);
@@ -53,11 +54,11 @@ function Reviews() {
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto', padding: '20px' }}>
+    <div className="container">
       <h2>Reviews for {product.name}</h2>
 
       {/* Display Product Details */}
-      <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
+      <div className="form-section">
         <h3>{product.name}</h3>
         <p>{product.description}</p>
         <p>
@@ -66,24 +67,24 @@ function Reviews() {
       </div>
 
       {/* Add Review Form */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="form-section">
         <h3>Add Your Review</h3>
-        {message && <p style={{ color: 'green' }}>{message}</p>}
-        <textarea
-          rows="4"
-          cols="50"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Write your review here..."
-          style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
-        />
-        <div>
-          <label>
-            Rating:
+        {message && <p className="message">{message}</p>}
+        <div className="form-row">
+          <div style={{ width: '100%' }}>
+            <label>Comment:</label>
+            <textarea
+              rows="4"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write your review here..."
+            />
+          </div>
+          <div>
+            <label>Rating:</label>
             <select
               value={newRating}
               onChange={(e) => setNewRating(e.target.value)}
-              style={{ marginLeft: '10px', padding: '5px' }}
             >
               {[1, 2, 3, 4, 5].map((rate) => (
                 <option key={rate} value={rate}>
@@ -91,47 +92,29 @@ function Reviews() {
                 </option>
               ))}
             </select>
-          </label>
+          </div>
         </div>
-        <button
-          onClick={handleAddReview}
-          style={{
-            marginTop: '10px',
-            padding: '10px 20px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Submit Review
-        </button>
+        <button onClick={handleAddReview}>Submit Review</button>
       </div>
 
       {/* Display Reviews */}
-      <h3>Customer Reviews</h3>
-      {reviews.length === 0 ? (
-        <p>No reviews yet. Be the first to review this product!</p>
-      ) : (
-        <ul style={{ listStyleType: 'none', padding: '0' }}>
-          {reviews.map((review) => (
-            <li
-              key={review._id}
-              style={{
-                marginBottom: '10px',
-                padding: '10px',
-                border: '1px solid #ccc',
-                borderRadius: '5px',
-              }}
-            >
-              <p>
-                <strong>Rating:</strong> {review.rating} / 5
-              </p>
-              <p>{review.comment}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="form-section">
+        <h3>Customer Reviews</h3>
+        {reviews.length === 0 ? (
+          <p>No reviews yet. Be the first to review this product!</p>
+        ) : (
+          <ul className="review-list">
+            {reviews.map((review) => (
+              <li key={review._id} className="review-item">
+                <p>
+                  <strong>Rating:</strong> {review.rating} / 5
+                </p>
+                <p>{review.comment}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import './style.css';
 
 function Products() {
   const [products, setProducts] = useState([]);

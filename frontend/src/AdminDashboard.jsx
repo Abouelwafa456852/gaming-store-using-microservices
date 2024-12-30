@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import './style.css';
 
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -393,101 +394,77 @@ function AdminDashboard() {
       )}
 
       {/* Add New Coupon Form */}
-      <h3>Add New Coupon</h3>
-      <div style={{ marginTop: '20px' }}>
-        <label>
-          Code:
-          <input
-            type="text"
-            value={newCouponCode}
-            onChange={(e) => setNewCouponCode(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <label>
-          Discount (%):
-          <input
-            type="number"
-            value={newCouponDiscount}
-            onChange={(e) => setNewCouponDiscount(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <label>
-          Expiration Date:
-          <input
-            type="date"
-            value={newCouponExpiration}
-            onChange={(e) => setNewCouponExpiration(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <button
-          onClick={addCoupon}
-          style={{
-            padding: '5px 10px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Add Coupon
-        </button>
-      </div>
+<div className="form-section">
+  <h3>Add New Coupon</h3>
+  <div className="form-row">
+    <div>
+      <label>Code:</label>
+      <input
+        type="text"
+        value={newCouponCode}
+        onChange={(e) => setNewCouponCode(e.target.value)}
+      />
+    </div>
+    <div>
+      <label>Discount (%):</label>
+      <input
+        type="number"
+        value={newCouponDiscount}
+        onChange={(e) => setNewCouponDiscount(e.target.value)}
+      />
+    </div>
+    <div>
+      <label>Expiration Date:</label>
+      <input
+        type="date"
+        value={newCouponExpiration}
+        onChange={(e) => setNewCouponExpiration(e.target.value)}
+      />
+    </div>
+  </div>
+  <button onClick={addCoupon}>Add Coupon</button>
+</div>
 
-      {/* Add New Product Form */}
-      <h3>Add New Product</h3>
-      <div style={{ marginTop: '20px' }}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={newProductName}
-            onChange={(e) => setNewProductName(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <label>
-          Description:
-          <input
-            type="text"
-            value={newProductDescription}
-            onChange={(e) => setNewProductDescription(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <label>
-          Price:
-          <input
-            type="number"
-            value={newProductPrice}
-            onChange={(e) => setNewProductPrice(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <label>
-          Stock:
-          <input
-            type="number"
-            value={newProductStock}
-            onChange={(e) => setNewProductStock(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', marginBottom: '10px', display: 'block' }}
-          />
-        </label>
-        <button
-          onClick={addProduct}
-          style={{
-            padding: '5px 10px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Add Product
-        </button>
-      </div>
+{/* Add New Product Form */}
+<div className="form-section">
+  <h3>Add New Product</h3>
+  <div className="form-row">
+    <div>
+      <label>Name:</label>
+      <input
+        type="text"
+        value={newProductName}
+        onChange={(e) => setNewProductName(e.target.value)}
+      />
+    </div>
+    <div>
+      <label>Description:</label>
+      <input
+        type="text"
+        value={newProductDescription}
+        onChange={(e) => setNewProductDescription(e.target.value)}
+      />
+    </div>
+    <div>
+      <label>Price:</label>
+      <input
+        type="number"
+        value={newProductPrice}
+        onChange={(e) => setNewProductPrice(e.target.value)}
+      />
+    </div>
+    <div>
+      <label>Stock:</label>
+      <input
+        type="number"
+        value={newProductStock}
+        onChange={(e) => setNewProductStock(e.target.value)}
+      />
+    </div>
+  </div>
+  <button onClick={addProduct}>Add Product</button>
+</div>
+
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Signup from './Signup';
 import Products from './Products';
 import CartPage from './CartPage'; // Import the CartPage component
 import Reviews from './Reviews'; // Import the Reviews component
+import './style.css';
 function App() {
   return (
     <Router>

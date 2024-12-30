@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './style.css';
+import gameIcone from './assets/gameIcone.png';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -37,7 +39,7 @@ function Login() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>
+    <div style={{ maxWidth: '400px', margin: 'auto', padding: '20px', textAlign: 'center' }}>
       <h2>Login</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <div style={{ marginBottom: '10px' }}>
@@ -95,6 +97,9 @@ function Login() {
       >
         Sign Up
       </button>
+      <div style={{ marginTop: '20px' }}>
+        <img src={gameIcone} alt="Game Icon" style={{ width: '100px', height: '100px' }} />
+      </div>
     </div>
   );
 }
